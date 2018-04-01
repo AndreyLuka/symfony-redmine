@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="container">
+        <h1><small>Projects</small></h1>
+
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <caption>List of projects</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ project.name }}</td>
+                            <td>{{ project.description }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-primary btn-sm" href="{{ path('project_show', {'identifier': project.identifier}) }}">View</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No projects found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

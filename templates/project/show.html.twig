@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="container">
+        {% include 'project/_header.html.twig' %}
+
+        <h2 class="mb-3"><small>Overview</small></h2>
+
+        <div class="mb-3">
+            <p>{{ project.description }}</p>
+            <ul>
+                {% for customField in project.customFields %}
+                    <li>{{ customField.name  }}: {{ customField.value }}</li>
+                {% endfor %}
+            </ul>
+            <p>Created on: {{ project.createdOn|date("m/d/Y") }}</p>
+            <p>Updated on: {{ project.updatedOn|date("m/d/Y") }}</p>
+            <p><a href="{{ path('project_time_entry_new', {'identifier': project.identifier}) }}">Log time</a></p>
+        </div>
+
+        <div>
+            {{ form_start(form, {method: 'POST', action: path('project_comment_new', {'identifier': project.identifier})}) }}
+                <h6>Add a comment</h6>
+                {{ form_widget(form) }}
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        <div>
+            <h6>Comments:</h6>
+            {% for comment in comments %}
+                <div class="border border-default mb-3 p-2">
+                    <p><strong>Author:</strong> {{ comment.author }}</p>
+                    <p><strong>Message:</strong></p>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% else %}
+                <p>No comments found.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

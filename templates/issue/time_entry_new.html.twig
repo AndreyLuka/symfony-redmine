@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="container">
+        <h2 class="mb-3"><small>Spent Time</small></h2>
+        <p>Issue #{{ issue.id }}: {{ issue.subject }}</p>
+
+        <div class="row">
+            <div class="col-sm-6">
+                {% include 'default/_form.html.twig' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

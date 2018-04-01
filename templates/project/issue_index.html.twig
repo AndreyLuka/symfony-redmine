@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="container">
+        {% include 'project/_header.html.twig' %}
+
+        <h2 class="mb-3"><small>Issues</small></h2>
+
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <caption>List of issues</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Done Ratio</th>
+                        <th scope="col">Updated</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                        <tr>
+                            <th scope="row">{{ issue.id }}</th>
+                            <td>{{ issue.subject }}</td>
+                            <td>{{ issue.description }}</td>
+                            <td>{{ issue.doneRatio }}%</td>
+                            <td>{{ issue.updatedOn|date() }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-default btn-sm" href="{{ path('issue_time_entry_new', {'id': issue.id}) }}">Log time</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No issues found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
