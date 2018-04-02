@@ -12,14 +12,11 @@ class Redmine
     private $client;
 
     /**
-     * @param string $url
-     * @param string $apiKey
+     * @param Client $client
      */
-    public function __construct(string $url, string $apiKey)
+    public function __construct(Client $client)
     {
-        $this->url = $url;
-        $this->apiKey = $apiKey;
-        $this->client = new Client($url, $apiKey);
+        $this->client = $client;
     }
 
     /**

@@ -37,11 +37,11 @@ services:
         class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
         arguments:
             -
-            - "@name_converter.camel_case_to_sneak_case_name"
+            - '@name_converter.camel_case_to_sneak_case_name'
             -
-            - "@property_accessor.reflection"
+            - '@property_accessor.reflection'
 
-    App\Services\Redmine:
+    Redmine\Client:
         arguments:
-            $url: '%env(REDMINE_URL)%'
-            $apiKey: '%env(REDMINE_API_KEY)%'
+            - '%env(REDMINE_URL)%'
+            - '%env(REDMINE_API_KEY)%'
