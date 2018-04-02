@@ -26,7 +26,12 @@ class ProjectController extends AbstractController
 {
     /**
      * @Route("", defaults={"page": "1"}, name="project_index")
-     * @Route("/page/{page}", defaults={"page": "1"}, requirements={"page": "[1-9]\d*"}, name="project_index_paginated")
+     * @Route(
+     *     "/page/{page}",
+     *     defaults={"page": "1"},
+     *     requirements={"page": "[1-9]\d*"},
+     *     name="project_index_paginated"
+     * )
      *
      * @param int            $page
      * @param ProjectAdapter $adapter
@@ -46,7 +51,12 @@ class ProjectController extends AbstractController
 
     /**
      * @Route("/{identifier}", defaults={"page": "1"}, name="project_show")
-     * @Route("/{identifier}/comments/page/{page}", defaults={"page": "1"}, requirements={"page": "[1-9]\d*"}, name="project_comment_index_paginated")
+     * @Route(
+     *     "/{identifier}/comments/page/{page}",
+     *     defaults={"page": "1"},
+     *     requirements={"page": "[1-9]\d*"},
+     *     name="project_comment_index_paginated"
+     * )
      *
      * @param string                $identifier
      * @param int                   $page
@@ -56,8 +66,13 @@ class ProjectController extends AbstractController
      *
      * @return Response
      */
-    public function show(string $identifier, int $page, CommentRepository $commentRepository, Redmine $redmine, DenormalizerInterface $serializer): Response
-    {
+    public function show(
+        string $identifier,
+        int $page,
+        CommentRepository $commentRepository,
+        Redmine $redmine,
+        DenormalizerInterface $serializer
+    ): Response {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
         }
@@ -77,7 +92,12 @@ class ProjectController extends AbstractController
 
     /**
      * @Route("/{identifier}/issues", defaults={"page": "1"}, name="project_issue_index")
-     * @Route("/{identifier}/issues/page/{page}", defaults={"page": "1"}, requirements={"page": "[1-9]\d*"}, name="project_issue_index_paginated")
+     * @Route(
+     *     "/{identifier}/issues/page/{page}",
+     *     defaults={"page": "1"},
+     *     requirements={"page": "[1-9]\d*"},
+     *     name="project_issue_index_paginated"
+     * )
      *
      * @param string                $identifier
      * @param int                   $page
@@ -86,8 +106,12 @@ class ProjectController extends AbstractController
      *
      * @return Response
      */
-    public function issueIndex(string $identifier, int $page, Redmine $redmine, DenormalizerInterface $serializer): Response
-    {
+    public function issueIndex(
+        string $identifier,
+        int $page,
+        Redmine $redmine,
+        DenormalizerInterface $serializer
+    ): Response {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
         }
@@ -115,8 +139,12 @@ class ProjectController extends AbstractController
      *
      * @return Response
      */
-    public function timeEntryNew(string $identifier, Request $request, Redmine $redmine, DenormalizerInterface $serializer): Response
-    {
+    public function timeEntryNew(
+        string $identifier,
+        Request $request,
+        Redmine $redmine,
+        DenormalizerInterface $serializer
+    ): Response {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
         }
@@ -152,8 +180,13 @@ class ProjectController extends AbstractController
      *
      * @return Response
      */
-    public function commentNew(string $identifier, Request $request, CommentRepository $commentRepository, Redmine $redmine, DenormalizerInterface $serializer): Response
-    {
+    public function commentNew(
+        string $identifier,
+        Request $request,
+        CommentRepository $commentRepository,
+        Redmine $redmine,
+        DenormalizerInterface $serializer
+    ): Response {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
         }

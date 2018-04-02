@@ -30,7 +30,10 @@ class Redmine
      */
     public function getProjects(int $offset = 0, int $limit = 1): ?array
     {
-        $data = $this->client->project->all(['offset' => $offset, 'limit' => $limit]);
+        $data = $this->client->project->all([
+            'offset' => $offset,
+            'limit' => $limit,
+        ]);
 
         if (!array_key_exists('projects', $data)) {
             return null;
@@ -96,7 +99,10 @@ class Redmine
      */
     public function getIssuesByProjectIdCount(int $projectId): ?int
     {
-        $data = $this->client->issue->all(['project_id' => $projectId, 'limit' => 1]);
+        $data = $this->client->issue->all([
+            'project_id' => $projectId,
+            'limit' => 1,
+        ]);
 
         if (!array_key_exists('total_count', $data)) {
             return null;

@@ -27,8 +27,12 @@ class IssueController extends AbstractController
      *
      * @return Response
      */
-    public function timeEntryNew(int $id, Request $request, Redmine $redmine, DenormalizerInterface $serializer): Response
-    {
+    public function timeEntryNew(
+        int $id,
+        Request $request,
+        Redmine $redmine,
+        DenormalizerInterface $serializer
+    ): Response {
         if (!$issueData = $redmine->getIssue($id)) {
             throw $this->createNotFoundException();
         }
