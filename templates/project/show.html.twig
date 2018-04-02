@@ -30,8 +30,9 @@
 
         <div>
             <h6>Comments:</h6>
-            {% for comment in comments %}
+            {% for comment in comments.currentPageResults %}
                 <div class="border border-default mb-3 p-2">
+                    <p>#{{ loop.index }}<small> (Published at: {{ comment.publishedAt|date() }})</small></p>
                     <p><strong>Author:</strong> {{ comment.author }}</p>
                     <p><strong>Message:</strong></p>
                     <p>{{ comment.content }}</p>
@@ -39,6 +40,12 @@
             {% else %}
                 <p>No comments found.</p>
             {% endfor %}
+
+            {% if comments.haveToPaginate %}
+                <div>
+                    {{ pagerfanta(comments, 'twitter_bootstrap4', {routeName: 'project_comment_index_paginated', 'routeParams': { 'identifier': project.identifier}}) }}
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

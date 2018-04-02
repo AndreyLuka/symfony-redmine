@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for issue in issues %}
+                    {% for issue in issues.currentPageResults %}
                         <tr>
                             <th scope="row">{{ issue.id }}</th>
                             <td>{{ issue.subject }}</td>
@@ -41,5 +41,11 @@
                 </tbody>
             </table>
         </div>
+
+        {% if issues.haveToPaginate %}
+            <div>
+                {{ pagerfanta(issues, 'twitter_bootstrap4', {routeName: 'project_issue_index_paginated', 'routeParams': { 'identifier': project.identifier}}) }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

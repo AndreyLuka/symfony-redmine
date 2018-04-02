@@ -23,19 +23,34 @@ class Redmine
     }
 
     /**
-     * @throws \Exception
+     * @param int $offset
+     * @param int $limit
      *
      * @return array|null
      */
-    public function getProjects(): ?array
+    public function getProjects(int $offset = 0, int $limit = 1): ?array
     {
-        $data = $this->client->project->all();
+        $data = $this->client->project->all(['offset' => $offset, 'limit' => $limit]);
 
         if (!array_key_exists('projects', $data)) {
             return null;
         }
 
         return $data['projects'];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getProjectsCount(): ?int
+    {
+        $data = $this->client->project->all(['limit' => 1]);
+
+        if (!array_key_exists('total_count', $data)) {
+            return null;
+        }
+
+        return $data['total_count'];
     }
 
     /**
@@ -53,19 +68,41 @@ class Redmine
     }
 
     /**
-     * @param string $projectId
+     * @param int $projectId
+     * @param int $offset
+     * @param int $limit
      *
      * @return array|null
      */
-    public function getIssuesByProjectId(string $projectId): ?array
+    public function getIssuesByProjectId(int $projectId, int $offset = 0, int $limit = 1): ?array
     {
-        $data = $this->client->issue->all(['project_id' => $projectId]);
+        $data = $this->client->issue->all([
+            'project_id' => $projectId,
+            'offset' => $offset,
+            'limit' => $limit,
+        ]);
 
         if (!array_key_exists('issues', $data)) {
             return null;
         }
 
         return $data['issues'];
+    }
+
+    /**
+     * @param int $projectId
+     *
+     * @return int|null
+     */
+    public function getIssuesByProjectIdCount(int $projectId): ?int
+    {
+        $data = $this->client->issue->all(['project_id' => $projectId, 'limit' => 1]);
+
+        if (!array_key_exists('total_count', $data)) {
+            return null;
+        }
+
+        return $data['total_count'];
     }
 
     /**

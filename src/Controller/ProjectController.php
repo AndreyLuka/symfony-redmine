@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
-use App\DTO\IssueDto;
 use App\DTO\ProjectDto;
 use App\Entity\Comment;
 use App\Entity\TimeEntry;
 use App\Form\CommentType;
 use App\Form\TimeEntryType;
+use App\Pagerfanta\Adapter\IssueAdapter;
+use App\Pagerfanta\Adapter\ProjectAdapter;
+use App\Repository\CommentRepository;
 use App\Services\Redmine;
+use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,36 +28,35 @@ class ProjectController extends AbstractController
      * @Route("", defaults={"page": "1"}, name="project_index")
      * @Route("/page/{page}", defaults={"page": "1"}, requirements={"page": "[1-9]\d*"}, name="project_index_paginated")
      *
-     * @param int     $page
-     * @param Redmine $redmine
+     * @param int            $page
+     * @param ProjectAdapter $adapter
      *
      * @return Response
      */
-    public function index(int $page, Redmine $redmine, DenormalizerInterface $serializer): Response
+    public function index(int $page, ProjectAdapter $adapter): Response
     {
-        if (!$projectsData = $redmine->getProjects()) {
-            return $this->render('project/index.html.twig', [
-                'projects' => null,
-            ]);
-        }
-
-        $projects = $serializer->denormalize($projectsData, ProjectDto::class.'[]');
+        $paginator = new Pagerfanta($adapter);
+        $paginator->setMaxPerPage(getenv('NUM_ITEMS'));
+        $paginator->setCurrentPage($page);
 
         return $this->render('project/index.html.twig', [
-            'projects' => $projects,
+            'projects' => $paginator,
         ]);
     }
 
     /**
-     * @Route("/{identifier}", name="project_show")
+     * @Route("/{identifier}", defaults={"page": "1"}, name="project_show")
+     * @Route("/{identifier}/comments/page/{page}", defaults={"page": "1"}, requirements={"page": "[1-9]\d*"}, name="project_comment_index_paginated")
      *
      * @param string                $identifier
+     * @param int                   $page
+     * @param CommentRepository     $commentRepository
      * @param Redmine               $redmine
      * @param DenormalizerInterface $serializer
      *
      * @return Response
      */
-    public function show(string $identifier, Redmine $redmine, DenormalizerInterface $serializer): Response
+    public function show(string $identifier, int $page, CommentRepository $commentRepository, Redmine $redmine, DenormalizerInterface $serializer): Response
     {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
@@ -62,9 +64,7 @@ class ProjectController extends AbstractController
 
         $project = $serializer->denormalize($projectData, ProjectDto::class);
 
-        $comments = $this->getDoctrine()->getRepository(Comment::class)->findBy([
-            'projectId' => $project->getid(),
-        ]);
+        $comments = $commentRepository->findByProjectId($project->getid(), $page);
 
         $form = $this->createForm(CommentType::class);
 
@@ -94,18 +94,14 @@ class ProjectController extends AbstractController
 
         $project = $serializer->denormalize($projectData, ProjectDto::class);
 
-        if (!$issuesData = $redmine->getIssuesByProjectId($project->getIdentifier())) {
-            return $this->render('project/issue_index.html.twig', [
-                'project' => $project,
-                'issues' => null,
-            ]);
-        }
-
-        $issues = $serializer->denormalize($issuesData, IssueDto::class.'[]');
+        $adapter = new IssueAdapter($redmine, $serializer, $project->getId());
+        $paginator = new Pagerfanta($adapter);
+        $paginator->setMaxPerPage(getenv('NUM_ITEMS'));
+        $paginator->setCurrentPage($page);
 
         return $this->render('project/issue_index.html.twig', [
             'project' => $project,
-            'issues' => $issues,
+            'issues' => $paginator,
         ]);
     }
 
@@ -150,12 +146,13 @@ class ProjectController extends AbstractController
      *
      * @param string                $identifier
      * @param Request               $request
+     * @param CommentRepository     $commentRepository
      * @param Redmine               $redmine
      * @param DenormalizerInterface $serializer
      *
      * @return Response
      */
-    public function commentNew(string $identifier, Request $request, Redmine $redmine, DenormalizerInterface $serializer): Response
+    public function commentNew(string $identifier, Request $request, CommentRepository $commentRepository, Redmine $redmine, DenormalizerInterface $serializer): Response
     {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
@@ -177,8 +174,11 @@ class ProjectController extends AbstractController
             return $this->redirectToRoute('project_show', ['identifier' => $project->getIdentifier()]);
         }
 
+        $comments = $commentRepository->findByProjectId($project->getid());
+
         return $this->render('project/show.html.twig', [
             'project' => $project,
+            'comments' => $comments,
             'form' => $form->createView(),
         ]);
     }

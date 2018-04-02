@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for project in projects %}
+                    {% for project in projects.currentPageResults %}
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
                             <td>{{ project.name }}</td>
@@ -35,5 +35,11 @@
                 </tbody>
             </table>
         </div>
+
+        {% if projects.haveToPaginate %}
+            <div>
+                {{ pagerfanta(projects, 'twitter_bootstrap4', {routeName: 'project_index_paginated'}) }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
