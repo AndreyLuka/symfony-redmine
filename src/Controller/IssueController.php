@@ -45,9 +45,13 @@ class IssueController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $redmine->newTimeEntryPerIssue($issue->getId(), $timeEntry->getTime());
+            if ($redmine->newTimeEntryPerIssue($issue->getId(), $timeEntry->getTime())) {
+                $this->addFlash('success', 'Time entry was successfully added.');
 
-            return $this->redirectToRoute('homepage');
+                return $this->redirectToRoute('homepage');
+            }
+
+            $this->addFlash('error', 'Time entry was not added. Please, try again later.');
         }
 
         return $this->render('issue/time_entry_new.html.twig', [

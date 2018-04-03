@@ -157,9 +157,13 @@ class ProjectController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $redmine->newTimeEntryPerProject($project->getId(), $timeEntry->getTime());
+            if ($redmine->newTimeEntryPerProject($project->getId(), $timeEntry->getTime())) {
+                $this->addFlash('success', 'Time entry was successfully added.');
 
-            return $this->redirectToRoute('project_show', ['identifier' => $project->getIdentifier()]);
+                return $this->redirectToRoute('project_show', ['identifier' => $project->getIdentifier()]);
+            }
+
+            $this->addFlash('error', 'Time entry was not added. Please, try again later.');
         }
 
         return $this->render('project/time_entry_new.html.twig', [

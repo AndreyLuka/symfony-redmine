@@ -40,6 +40,12 @@
         {% endblock %}
 
         <main>
+            {% if app.session.flashBag.peekAll %}
+                <div class="container">
+                    {% include 'default/_flash_messages.html.twig' %}
+                </div>
+            {% endif %}
+
             {% block main %}{% endblock %}
         </main>
 
