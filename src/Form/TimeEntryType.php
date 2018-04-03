@@ -16,7 +16,7 @@ class TimeEntryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('time', IntegerType::class)
+            ->add('time', IntegerType::class, ['label' => 'label.time'])
         ;
     }
 

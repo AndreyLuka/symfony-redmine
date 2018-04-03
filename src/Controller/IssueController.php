@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/issues")
@@ -24,6 +25,7 @@ class IssueController extends AbstractController
      * @param Request               $request
      * @param Redmine               $redmine
      * @param DenormalizerInterface $serializer
+     * @param TranslatorInterface   $translator
      *
      * @return Response
      */
@@ -31,7 +33,8 @@ class IssueController extends AbstractController
         int $id,
         Request $request,
         Redmine $redmine,
-        DenormalizerInterface $serializer
+        DenormalizerInterface $serializer,
+        TranslatorInterface $translator
     ): Response {
         if (!$issueData = $redmine->getIssue($id)) {
             throw $this->createNotFoundException();
@@ -46,12 +49,12 @@ class IssueController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($redmine->newTimeEntryPerIssue($issue->getId(), $timeEntry->getTime())) {
-                $this->addFlash('success', 'Time entry was successfully added.');
+                $this->addFlash('success', $translator->trans('time_entry.new_success'));
 
                 return $this->redirectToRoute('homepage');
             }
 
-            $this->addFlash('error', 'Time entry was not added. Please, try again later.');
+            $this->addFlash('error', $translator->trans('time_entry.new_error'));
         }
 
         return $this->render('issue/time_entry_new.html.twig', [

@@ -1,0 +1,48 @@
+title:
+    app_name: Redmine App
+    overview: Overview
+    issues: Issues
+    issues_list: List of issues
+    projects: Projects
+    projects_list: List of projects
+    comments: Comments
+    add_comment: Add a comment
+    spent_time: Spent Time
+
+label:
+    author: Author
+    message: Message
+    time: Time
+    name: Name
+    description: Description
+    actions: Actions
+    subject: Subject
+    done_ratio: Done Ratio
+    created: Created on
+    updated: Updated on
+
+action:
+    add: Add
+    view: View
+    submit: Submit
+    log_time: Log time
+
+menu:
+    home: Home
+    projects: Projects
+
+user:
+    hello: Hello, %name%!
+
+project:
+    no_projects_found: No projects found.
+
+issue:
+    no_issues_found: No issues found.
+
+time_entry:
+    new_success: Time entry was successfully added.
+    new_error: Time entry was not added. Please, try again later.
+
+comment:
+    no_comments_found: No comments found.
