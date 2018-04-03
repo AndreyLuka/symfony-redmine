@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\TimeEntry;
+use App\DTO\TimeEntryDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,7 +26,7 @@ class TimeEntryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TimeEntry::class,
+            'data_class' => TimeEntryDto::class,
             'attr' => ['novalidate' => 'novalidate'],
         ]);
     }

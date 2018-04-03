@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\DTO\ProjectDto;
+use App\DTO\TimeEntryDto;
 use App\Entity\Comment;
-use App\Entity\TimeEntry;
 use App\Form\CommentType;
 use App\Form\TimeEntryType;
 use App\Pagerfanta\Adapter\IssueAdapter;
@@ -151,7 +151,7 @@ class ProjectController extends AbstractController
 
         $project = $serializer->denormalize($projectData, ProjectDto::class);
 
-        $timeEntry = new TimeEntry();
+        $timeEntry = new TimeEntryDto();
 
         $form = $this->createForm(TimeEntryType::class, $timeEntry);
         $form->handleRequest($request);

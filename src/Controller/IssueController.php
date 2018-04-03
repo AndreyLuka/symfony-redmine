@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\IssueDto;
-use App\Entity\TimeEntry;
+use App\DTO\TimeEntryDto;
 use App\Form\TimeEntryType;
 use App\Services\Redmine;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -39,7 +39,7 @@ class IssueController extends AbstractController
 
         $issue = $serializer->denormalize($issueData, IssueDto::class);
 
-        $timeEntry = new TimeEntry();
+        $timeEntry = new TimeEntryDto();
 
         $form = $this->createForm(TimeEntryType::class, $timeEntry);
         $form->handleRequest($request);
