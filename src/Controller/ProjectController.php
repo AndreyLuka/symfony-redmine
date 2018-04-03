@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\DTO\ProjectDto;
+use App\DTO\TimeEntryDto;
 use App\Entity\Comment;
-use App\Entity\TimeEntry;
 use App\Form\CommentType;
 use App\Form\TimeEntryType;
 use App\Pagerfanta\Adapter\IssueAdapter;
@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/projects")
@@ -136,6 +137,7 @@ class ProjectController extends AbstractController
      * @param Request               $request
      * @param Redmine               $redmine
      * @param DenormalizerInterface $serializer
+     * @param TranslatorInterface   $translator
      *
      * @return Response
      */
@@ -143,7 +145,8 @@ class ProjectController extends AbstractController
         string $identifier,
         Request $request,
         Redmine $redmine,
-        DenormalizerInterface $serializer
+        DenormalizerInterface $serializer,
+        TranslatorInterface $translator
     ): Response {
         if (!$projectData = $redmine->getProject($identifier)) {
             throw $this->createNotFoundException();
@@ -151,15 +154,19 @@ class ProjectController extends AbstractController
 
         $project = $serializer->denormalize($projectData, ProjectDto::class);
 
-        $timeEntry = new TimeEntry();
+        $timeEntry = new TimeEntryDto();
 
         $form = $this->createForm(TimeEntryType::class, $timeEntry);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $redmine->newTimeEntryPerProject($project->getId(), $timeEntry->getTime());
+            if ($redmine->newTimeEntryPerProject($project->getId(), $timeEntry->getTime())) {
+                $this->addFlash('success', $translator->trans('time_entry.new_success'));
 
-            return $this->redirectToRoute('project_show', ['identifier' => $project->getIdentifier()]);
+                return $this->redirectToRoute('project_show', ['identifier' => $project->getIdentifier()]);
+            }
+
+            $this->addFlash('error', $translator->trans('time_entry.new_error'));
         }
 
         return $this->render('project/time_entry_new.html.twig', [

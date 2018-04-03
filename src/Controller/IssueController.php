@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\IssueDto;
-use App\Entity\TimeEntry;
+use App\DTO\TimeEntryDto;
 use App\Form\TimeEntryType;
 use App\Services\Redmine;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/issues")
@@ -24,6 +25,7 @@ class IssueController extends AbstractController
      * @param Request               $request
      * @param Redmine               $redmine
      * @param DenormalizerInterface $serializer
+     * @param TranslatorInterface   $translator
      *
      * @return Response
      */
@@ -31,7 +33,8 @@ class IssueController extends AbstractController
         int $id,
         Request $request,
         Redmine $redmine,
-        DenormalizerInterface $serializer
+        DenormalizerInterface $serializer,
+        TranslatorInterface $translator
     ): Response {
         if (!$issueData = $redmine->getIssue($id)) {
             throw $this->createNotFoundException();
@@ -39,15 +42,19 @@ class IssueController extends AbstractController
 
         $issue = $serializer->denormalize($issueData, IssueDto::class);
 
-        $timeEntry = new TimeEntry();
+        $timeEntry = new TimeEntryDto();
 
         $form = $this->createForm(TimeEntryType::class, $timeEntry);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $redmine->newTimeEntryPerIssue($issue->getId(), $timeEntry->getTime());
+            if ($redmine->newTimeEntryPerIssue($issue->getId(), $timeEntry->getTime())) {
+                $this->addFlash('success', $translator->trans('time_entry.new_success'));
 
-            return $this->redirectToRoute('homepage');
+                return $this->redirectToRoute('homepage');
+            }
+
+            $this->addFlash('error', $translator->trans('time_entry.new_error'));
         }
 
         return $this->render('issue/time_entry_new.html.twig', [

@@ -111,25 +111,41 @@ class Redmine
     /**
      * @param string $projectId
      * @param int    $hours
+     *
+     * @return bool
      */
-    public function newTimeEntryPerProject(string $projectId, int $hours): void
+    public function newTimeEntryPerProject(string $projectId, int $hours): bool
     {
-        $this->client->time_entry->create([
+        $data = $this->client->time_entry->create([
             'project_id' => $projectId,
             'hours' => $hours,
         ]);
+
+        if (!$data) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * @param int $issueId
      * @param int $hours
+     *
+     * @return bool
      */
-    public function newTimeEntryPerIssue(int $issueId, int $hours): void
+    public function newTimeEntryPerIssue(int $issueId, int $hours): bool
     {
-        $this->client->time_entry->create([
+        $data = $this->client->time_entry->create([
             'issue_id' => $issueId,
             'hours' => $hours,
         ]);
+
+        if (!$data) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

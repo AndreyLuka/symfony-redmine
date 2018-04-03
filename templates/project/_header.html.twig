@@ -1,6 +1,6 @@
 <h1><small>{{ project.name }}</small></h1>
 
 <nav class="nav border border-primary mb-3">
-    <a class="nav-link" href="{{ path('project_show', {'identifier': project.identifier}) }}">Overview</a>
-    <a class="nav-link" href="{{ path('project_issue_index', {'identifier': project.identifier}) }}">Issues</a>
+    <a class="nav-link" href="{{ path('project_show', {'identifier': project.identifier}) }}">{{ 'title.overview'|trans }}</a>
+    <a class="nav-link" href="{{ path('project_issue_index', {'identifier': project.identifier}) }}">{{ 'title.issues'|trans }}</a>
 </nav>

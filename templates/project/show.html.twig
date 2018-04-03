@@ -4,7 +4,7 @@
     <div class="container">
         {% include 'project/_header.html.twig' %}
 
-        <h2 class="mb-3"><small>Overview</small></h2>
+        <h2 class="mb-3"><small>{{ 'title.overview'|trans }}</small></h2>
 
         <div class="mb-3">
             <p>{{ project.description }}</p>
@@ -13,32 +13,32 @@
                     <li>{{ customField.name  }}: {{ customField.value }}</li>
                 {% endfor %}
             </ul>
-            <p>Created on: {{ project.createdOn|date("m/d/Y") }}</p>
-            <p>Updated on: {{ project.updatedOn|date("m/d/Y") }}</p>
-            <p><a href="{{ path('project_time_entry_new', {'identifier': project.identifier}) }}">Log time</a></p>
+            <p>{{ 'label.created'|trans }}: {{ project.createdOn|date("m/d/Y") }}</p>
+            <p>{{ 'label.updated'|trans }}: {{ project.updatedOn|date("m/d/Y") }}</p>
+            <p><a href="{{ path('project_time_entry_new', {'identifier': project.identifier}) }}">{{ 'action.log_time'|trans }}</a></p>
         </div>
 
         <div>
             {{ form_start(form, {method: 'POST', action: path('project_comment_new', {'identifier': project.identifier})}) }}
-                <h6>Add a comment</h6>
+                <h6>{{ 'title.add_comment'|trans }}</h6>
                 {{ form_widget(form) }}
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary">{{ 'action.add'|trans }}</button>
                 </div>
             {{ form_end(form) }}
         </div>
 
         <div>
-            <h6>Comments:</h6>
+            <h6>{{ 'title.comments'|trans }}</h6>
             {% for comment in comments.currentPageResults %}
                 <div class="border border-default mb-3 p-2">
                     <p>#{{ loop.index }}<small> (Published at: {{ comment.publishedAt|date() }})</small></p>
-                    <p><strong>Author:</strong> {{ comment.author }}</p>
-                    <p><strong>Message:</strong></p>
+                    <p><strong>{{ 'label.author'|trans }}:</strong> {{ comment.author }}</p>
+                    <p><strong>{{ 'label.message'|trans }}:</strong></p>
                     <p>{{ comment.content }}</p>
                 </div>
             {% else %}
-                <p>No comments found.</p>
+                <p>{{ 'comment.no_comments_found'|trans }}</p>
             {% endfor %}
 
             {% if comments.haveToPaginate %}

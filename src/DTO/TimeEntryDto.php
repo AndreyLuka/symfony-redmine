@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\DTO;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class TimeEntry
+class TimeEntryDto
 {
     /**
      * @Assert\NotBlank()
